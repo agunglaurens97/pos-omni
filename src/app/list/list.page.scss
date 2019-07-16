@@ -1,1 +1,29 @@
+.list-item {
+    display:flex;
+    flex-flow:row wrap;
+    justify-content: flex-start;
 
+    .item-img {
+        background: grey;
+        height: 150px;
+        width: 100%;
+    }
+
+    .item {
+        width: 200px;
+        border: 1px solid #e6e6e6;
+        display: flex;
+        flex-flow: column wrap;
+        justify-content: center;
+        margin: 10px;
+        text-align: center;
+
+        .item-title {
+            margin-bottom: 0px;
+        }
+
+        .item-note {
+            margin-top:5px;
+        }
+    }
+}
