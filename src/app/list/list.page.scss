@@ -21,7 +21,7 @@
     }
 
     .item {
-        min-width: 160px;
+        width: calc(25% - 25px);
         border: 1px solid #e6e6e6;
         display: flex;
         flex-flow: column wrap;
