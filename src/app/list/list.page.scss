@@ -1,7 +1,18 @@
+
+.container {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+}
+
 .list-item {
     display:flex;
     flex-flow:row wrap;
     justify-content: flex-start;
+    min-width: 550px;
+    max-width: calc(100% - 200px);
+    overflow: auto;
+    max-height: 900px;
 
     .item-img {
         background: grey;
@@ -10,7 +21,7 @@
     }
 
     .item {
-        width: 200px;
+        min-width: 160px;
         border: 1px solid #e6e6e6;
         display: flex;
         flex-flow: column wrap;
@@ -24,6 +35,18 @@
 
         .item-note {
             margin-top:5px;
+        }
+    }
+}
+
+.cart {
+    right: 0;
+    min-width: 200px;
+
+    .cart-item {
+        border-bottom: 1px solid #e6e6e6;
+        padding:20px 0;
+        .item {
         }
     }
 }

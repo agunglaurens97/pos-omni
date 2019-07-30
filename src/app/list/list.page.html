@@ -10,6 +10,7 @@
 </ion-header>
 
 <ion-content>
+<div class='container'>
   <div class='list-item'>
     <div *ngFor="let item of items" class='item' no-border>
       <!--<ion-icon [name]="item.icon" slot="start"></ion-icon>-->
@@ -20,6 +21,33 @@
       </p>
     </div>
   </div>
+
+  <div class='cart'>
+    <h6>Shopping Item</h6>
+   <div class='cart-item'>
+    <div class='item'>
+      <img class='item-img' />
+      <h6 class='item-title'>Test Item</h6>
+      <span class='price'>IDR. 300.000</span><span> x </span><span class='qty'>2</span>
+    </div>
+    <div class='item'>
+      <img class='item-img' />
+      <h6 class='item-title'>Test Item</h6>
+      <span class='price'>IDR. 300.000</span><span> x </span><span class='qty'>2</span>
+    </div>
+    <div class='item'>
+      <img class='item-img' />
+      <h6 class='item-title'>Test Item</h6>
+      <span class='price'>IDR. 300.000</span><span> x </span><span class='qty'>2</span>
+    </div>
+    <div class='item'>
+      <img class='item-img' />
+      <h6 class='item-title'>Test Item</h6>
+      <span class='price'>IDR. 300.000</span><span> x </span><span class='qty'>2</span>
+    </div>
+   </div>
+  </div>
+</div>
   <!--
     <div *ngIf="selectedItem" padding>
       You navigated here from <b>{{selectedItem.title }}</b>
