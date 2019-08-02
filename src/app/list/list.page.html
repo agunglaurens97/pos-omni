@@ -10,44 +10,34 @@
 </ion-header>
 
 <ion-content>
+  <ion-select placeholder="Pilih Category" [(ngModel)]="filter" ngDefaultControl style="width: 150px">
+    <ion-select-option value="-1">All</ion-select-option>
+    <ion-select-option *ngFor="let item of listCategory" value="{{item.id_product_category}}">{{item.name}}</ion-select-option>
+  </ion-select>
 <div class='container'>
   <div class='list-item'>
-    <div *ngFor="let item of items" class='item' no-border>
+    <div *ngFor="let item of listProduct | filterProduct: filter" class='item' no-border (click)="addItem(item)">
       <!--<ion-icon [name]="item.icon" slot="start"></ion-icon>-->
-      <img class='item-img' />
-      <h6 class='item-title'>{{item.title}}</h6>
-      <p class="item-note">
-        {{item.note}}
-      </p>
-      <button>Add to Cart</button>
+        <img class='item-img' />
+        <h6 [(ngModel)]="newItem.id" ngDefaultControl style="display: none">{{item.id_product_category}}</h6>
+        <h6 class='item-title' [(ngModel)]="newItem.title" ngDefaultControl >{{item.name}}</h6>
+        <p class="item-note" [(ngModel)]="newItem.price" ngDefaultControl style="color: red; font-size: 10px">
+          Rp {{item.price}}
+        </p>
+        <button>Add to Cart</button>
     </div>
   </div>
 
   <div class='cart'>
     <h6>Shopping Item</h6>
    <div class='cart-item'>
-    <div class='item'>
+    <div class='item' *ngFor="let item of orders" >
       <img class='item-img' />
-      <h6 class='item-title'>Test Item</h6>
-      <span class='price'>IDR. 300.000</span><span> x </span><span class='qty'>2</span>
-    </div>
-    <div class='item'>
-      <img class='item-img' />
-      <h6 class='item-title'>Test Item</h6>
-      <span class='price'>IDR. 300.000</span><span> x </span><span class='qty'>2</span>
-    </div>
-    <div class='item'>
-      <img class='item-img' />
-      <h6 class='item-title'>Test Item</h6>
-      <span class='price'>IDR. 300.000</span><span> x </span><span class='qty'>2</span>
-    </div>
-    <div class='item'>
-      <img class='item-img' />
-      <h6 class='item-title'>Test Item</h6>
-      <span class='price'>IDR. 300.000</span><span> x </span><span class='qty'>2</span>
-
+      <h6 class='item-title'>{{item.title}}</h6>
+      <span class='price'>{{item.price}}</span><span> x </span><span class='qty'>{{item.qty}}</span>
     </div>
    </div>
+   <button>asd</button>
   </div>
 </div>
   <!--

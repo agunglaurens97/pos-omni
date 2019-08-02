@@ -1,5 +1,7 @@
 {
   "name": "POSomni",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }
