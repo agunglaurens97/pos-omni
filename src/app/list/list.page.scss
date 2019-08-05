@@ -5,6 +5,27 @@
     justify-content: flex-start;
 }
 
+div[scrollx=true], div[scrolly=true] {
+    position: relative;
+    overflow: hidden;
+  
+    ::-webkit-scrollbar {
+      display: none;
+    }
+  }
+  
+  div[scrollx=true] {
+    overflow-x: auto;
+  }
+  
+  div[scrolly=true] {
+    overflow-y: auto;
+  }
+
+#myFixZone {
+    height: 250px;
+}
+
 .list-item {
     display:flex;
     flex-flow:row wrap;
@@ -61,7 +82,7 @@
 
     .cart-item {
         border-bottom: 1px solid #e6e6e6;
-        padding:20px 0;
+
         .item {
         }
     }

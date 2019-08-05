@@ -49,4 +49,24 @@ export class ApiService {
       });
     });
   }
+
+  getAllTransaction(id){
+    var headers = new HttpHeaders();
+    headers.append("Accept", 'Access-Control-Allow-Origin');
+    headers.append('Content-Type', 'application/json' );
+
+    return new Promise(resolve => {
+      this.http.post(`${this.url}/transactionHistory/?key=${this.apiKey}`, {
+        "id_outlet": id,
+        "mode": "all"
+      }, {
+        headers
+      })
+      .subscribe(data => {
+        resolve(data["data"]);
+      }, error => {
+        console.log("No Internet Connection!");
+      });
+    });
+  }
 }

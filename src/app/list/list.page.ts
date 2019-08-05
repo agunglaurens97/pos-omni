@@ -28,9 +28,12 @@ export class ListPage implements OnInit {
   listProduct: {};
   listCategory: {};
   public filter = "-1";
+  public saved = {};
   orders: Item[] = [];
- 
+  total = 0;
   newItem: Item = <Item>{};
+
+  savedItems= [];
   
   public items: Array<{ title: string; note: string; icon: string }> = [];
   constructor(private storage: Storage, private API: ApiService, private plt: Platform, private storageService: StorageService) {
@@ -47,32 +50,90 @@ export class ListPage implements OnInit {
     this.API.getProductCategory(1).then( data =>{
       this.listCategory = data;
     })
+
+    this.loadItemsSaved();
+
+  }
+
+  calculateTotal(items){
+    if(items != null){
+      this.total = 0;
+      items.forEach(element => {
+        this.total = this.total + (element.price*element.qty);
+      });
+    }
+  }
+
+  saveOrder(){
+    this.storageService.addItemSavedOrder(this.orders);
+
+    this.storage.remove(this.storageService.getKey());
+    this.total = 0;
+    this.orders = [];
+  }
+
+  clearCart(){
+    this.orders = [];
+    this.storage.remove(this.storageService.getKey());
+
+    this.total = 0;
+
   }
 
   // CREATE
   addItem(item) {
     this.newItem = {
       id: item.id_product,
-      price: item.price,
+      price: parseInt(item.price),
       title: item.name,
       qty: 1
     }
-    
-    this.storageService.addItem(this.newItem).then(item => {
-      this.newItem = <Item>{};
-      this.loadItems(); // Or add it to the array directly
-    });
 
-    
+    this.storageService.checkItem(this.newItem).then( item =>{
+      // itemnya ada, nambah jumlah tok
+      if(item == 1){
+        this.storageService.checkQty(this.newItem).then( data => {
+          this.newItem.qty = data;
+          this.updateItem(this.newItem);
+        })
+        
+      }else {
+        this.storageService.addItem(this.newItem).then(item => {
+          this.newItem = <Item>{};
+          this.loadItems(); // Or add it to the array directly
+        });
+      }
+    })
   }
 
   // READ
   loadItems() {
     this.storageService.getItems().then(items => {
       this.orders = items;
-    });
 
-    console.log(this.orders);
+      this.calculateTotal(items);
+    });
+  }
+
+  // READ SAVED ITEM
+  loadItemsSaved(){
+    this.storageService.getItemSavedOrder().then(items => {
+      if(items){
+        items.forEach(element => {
+          var details = JSON.parse(JSON.stringify(element));
+          console.log(details);
+          for(let i=0 ;i<details.length;i++)
+          {
+            console.log(details[i].id);
+          }
+          
+        });
+        
+      }else {
+        
+      }
+      
+    });
   }
 
   // UPDATE
@@ -84,14 +145,12 @@ export class ListPage implements OnInit {
     });
   }
 
-  // // DELETE
-  // deleteItem(item: Item) {
-  //   this.storageService.deleteItem(item.id).then(item => {
-  //     this.showToast('Item removed!');
-  //     this.mylist.closeSlidingItems(); // Fix or sliding is stuck afterwards
-  //     this.loadItems(); // Or splice it from the array directly
-  //   });
-  // }
+  // DELETE
+  deleteItem(item: Item) {
+    this.storageService.deleteItem(item.id).then(item => {
+      this.loadItems(); // Or splice it from the array directly
+    });
+  }
 
   ngOnInit() {
   }

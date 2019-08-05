@@ -4,8 +4,9 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>
-      List
+      Products
     </ion-title>
+    <ion-button color="primary" slot="end" style="margin-right: 30px;">Scan Customer</ion-button>
   </ion-toolbar>
 </ion-header>
 
@@ -28,16 +29,46 @@
     </div>
   </div>
 
+  <!-- CART SECTION -->
+
   <div class='cart'>
-    <h6>Shopping Item</h6>
-   <div class='cart-item'>
-    <div class='item' *ngFor="let item of orders" >
-      <img class='item-img' />
-      <h6 class='item-title'>{{item.title}}</h6>
-      <span class='price'>{{item.price}}</span><span> x </span><span class='qty'>{{item.qty}}</span>
+    <h6 style="font-weight:bold; font-size: 20px; ">Cart</h6>
+    <button style="background-color: tan; height: 20px;" (click)="clearCart();">Clear Cart</button>
+    <!-- <ion-select placeholder="Saved Order.." [(ngModel)]="filter" ngDefaultControl style="width: 150px">
+      <ion-select-option *ngFor="let item of saved" value="{{item.id}}">{{item.title}}</ion-select-option>
+    </ion-select> -->
+    <div scrollY="true" id="myFixZone" scrollY="true">
+      <div class='cart-item' >
+        <div class='item' *ngFor="let item of orders" >
+          <img class='item-img' />
+          <ion-label style="display: none" [(ngModel)]="newItem.id" ngDefaultControl>{{item.id}}</ion-label>
+          <h6 class='item-title'>{{item.title}}</h6>
+          <span class='price' style="color: red">Rp {{item.price}}</span><span> x </span><span class='qty'>{{item.qty}}</span><span><button (click)="deleteItem(item)">X</button></span>
+        </div>
+       </div>
     </div>
-   </div>
-   <button>asd</button>
+
+    <ion-item lines="none">
+      <ion-label>
+        Diskon: <span style="color: red">Rp 0</span>
+      </ion-label>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label>
+        Total Bayar: <span style="color: red">Rp {{total}}</span>
+      </ion-label>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-button color="danger">Masukkan Discount</ion-button>
+    </ion-item>
+    
+    <ion-item lines="none">
+      <ion-button color="primary" style="width: 50%">Bayar</ion-button>
+      
+      <ion-button color="secondary" style="width: 50%" (click)="saveOrder()">Simpan</ion-button>
+    </ion-item>
+   
+   
   </div>
 </div>
   <!--

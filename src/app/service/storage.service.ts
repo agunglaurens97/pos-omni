@@ -29,20 +29,57 @@ export class StorageService {
     });
   }
 
+  // CREATE FOR SAVED ORDER
+  addItemSavedOrder(item): Promise<any> {
+    return this.storage.get("savedOrder").then((items: Item[]) => {
+      if (items) {
+        items.push(item);
+        return this.storage.set("savedOrder", items);
+      } else {
+        return this.storage.set("savedOrder", [item]);
+      }
+    });
+  }
+
+  getKey(){
+    return ITEMS_KEY;
+  }
+
   checkItem(item : Item): Promise<any>{
+    return this.storage.get(ITEMS_KEY).then((items: Item[]) => {
+      if (items == null) {
+        return 0;
+      } else {
+        return this.storage.get(ITEMS_KEY).then((items: Item[]) => {
+          for (let i of items) {
+            if (i.id === item.id) {
+              return 1;
+            }
+          }
+          return 0;
+        });
+      }
+    }); 
+  }
+
+  checkQty(item : Item): Promise<any>{
     return this.storage.get(ITEMS_KEY).then((items: Item[]) => {
       for (let i of items) {
         if (i.id === item.id) {
-          return 1;
+          return i.qty;
         }
       }
-      return 0;
     });
   }
  
   // READ
   getItems(): Promise<Item[]> {
     return this.storage.get(ITEMS_KEY);
+  }
+
+  // READ FOR SAVED ORDER
+  getItemSavedOrder(): Promise<Item[]> {
+    return this.storage.get("savedOrder");
   }
  
   // UPDATE
@@ -83,4 +120,5 @@ export class StorageService {
       return this.storage.set(ITEMS_KEY, toKeep);
     });
   }
+  
 }
