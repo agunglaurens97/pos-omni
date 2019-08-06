@@ -20,9 +20,11 @@ export class StorageService {
   // CREATE
   addItem(item: Item): Promise<any> {
     return this.storage.get(ITEMS_KEY).then((items: Item[]) => {
+      console.log(item);
       if (items) {
         items.push(item);
         return this.storage.set(ITEMS_KEY, items);
+        
       } else {
         return this.storage.set(ITEMS_KEY, [item]);
       }
@@ -47,6 +49,7 @@ export class StorageService {
 
   checkItem(item : Item): Promise<any>{
     return this.storage.get(ITEMS_KEY).then((items: Item[]) => {
+      //console.log("asd",items);
       if (items == null) {
         return 0;
       } else {
@@ -118,6 +121,24 @@ export class StorageService {
         }
       }
       return this.storage.set(ITEMS_KEY, toKeep);
+    });
+  }
+
+  // DELETE ITEM SAVED ORDER
+  deleteItemSavedOrder(id: number): Promise<Item> {
+    return this.storage.get("savedOrder").then((items: Item[]) => {
+      if (!items || items.length === 0) {
+        return null;
+      }
+ 
+      let toKeep: Item[] = [];
+ 
+      for (let i of items) {
+        if (i.id !== id) {
+          toKeep.push(i);
+        }
+      }
+      return this.storage.set("savedOrder", toKeep);
     });
   }
   

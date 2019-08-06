@@ -14,7 +14,10 @@ const routes: Routes = [
   {
     path: 'list',
     loadChildren: './list/list.module#ListPageModule'
-  }
+  },  { path: 'scan-customer', loadChildren: './modals/scan-customer/scan-customer.module#ScanCustomerPageModule' },
+  { path: 'saved-order', loadChildren: './modals/saved-order/saved-order.module#SavedOrderPageModule' },
+
+
 ];
 
 @NgModule({

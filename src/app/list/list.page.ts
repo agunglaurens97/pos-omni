@@ -1,9 +1,14 @@
+
 import { StorageService } from './../service/storage.service';
 import { ApiService } from './../service/api.service';
 import { Component, OnInit } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { Item } from '../service/storage.service';
-import { Platform } from '@ionic/angular';
+import { Platform, ModalController } from '@ionic/angular';
+import { PaymentModalPage } from '../modals/payment-modal/payment-modal.page';
+import { ScanCustomerPage } from '../modals/scan-customer/scan-customer.page';
+import { SavedOrderPage } from '../modals/saved-order/saved-order.page';
+
 @Component({
   selector: 'app-list',
   templateUrl: 'list.page.html',
@@ -11,32 +16,35 @@ import { Platform } from '@ionic/angular';
 })
 
 export class ListPage implements OnInit {
-  private selectedItem: any;
-  private icons = [
-    'flask',
-    'wifi',
-    'beer',
-    'football',
-    'basketball',
-    'paper-plane',
-    'american-football',
-    'boat',
-    'bluetooth',
-    'build'
-  ];
+  
 
   listProduct: {};
   listCategory: {};
   public filter = "-1";
   public saved = {};
-  orders: Item[] = [];
+  details: Item = <Item>{};
+  detail: Item[] = [];
+  orders = [{
+    "id": 1,
+    "details": this.details,
+    "total": 0
+  }];
+  
   total = 0;
   newItem: Item = <Item>{};
 
-  savedItems= [];
+  tmpItem = {};
+
+  customer = "Scan Customer";
+  savedItems= {};
   
   public items: Array<{ title: string; note: string; icon: string }> = [];
-  constructor(private storage: Storage, private API: ApiService, private plt: Platform, private storageService: StorageService) {
+  constructor(
+    private storage: Storage, 
+    private API: ApiService, 
+    private plt: Platform, 
+    private modalController: ModalController,
+    private storageService: StorageService) {
     this.plt.ready().then(() => {
       this.loadItems();
     });
@@ -51,7 +59,7 @@ export class ListPage implements OnInit {
       this.listCategory = data;
     })
 
-    this.loadItemsSaved();
+    //this.loadItemsSaved();
 
   }
 
@@ -65,19 +73,111 @@ export class ListPage implements OnInit {
   }
 
   saveOrder(){
-    this.storageService.addItemSavedOrder(this.orders);
+    let idx = 0;
+    this.storageService.getItemSavedOrder().then( data =>{
+      if(data == null) idx = 0
+      else idx = data[data.length-1].id;
 
-    this.storage.remove(this.storageService.getKey());
+      this.savedItems = {
+        "id": idx+1,
+        "details": this.detail,
+        "total": this.total
+      };
+  
+      this.storageService.addItemSavedOrder(this.savedItems);
+  
+      this.storage.remove(this.storageService.getKey());
+      
+      this.resetInput();
+    })
+   
+  }
+
+  resetInput(){
     this.total = 0;
     this.orders = [];
+    this.detail = [];
+  }
+
+  async loadSaveOrder(){
+    const modal = await this.modalController.create({
+      component: SavedOrderPage,
+      componentProps: {
+        orders: this.orders
+      }
+    });
+
+    modal.onDidDismiss()
+    .then((data) => {
+      this.detail = [];
+      if(data["data"] != null){
+
+        console.log(data["data"]['details'])
+        
+        this.detail = data["data"]["details"]
+
+        // this.addItem(data["data"][0]);
+
+        // this.loadItems();
+        this.calculateTotal(this.orders);
+      }
+  });
+    modal.present();
+  }
+
+  loadedItems(item): Promise<any> {
+    return this.storage.get("savedOrder").then((items: Item[]) => {
+      if (items) {
+        items.push(item);
+        return this.storage.set("savedOrder", items);
+      } else {
+        return this.storage.set("savedOrder", [item]);
+      }
+    });
   }
 
   clearCart(){
-    this.orders = [];
     this.storage.remove(this.storageService.getKey());
 
-    this.total = 0;
+    this.resetInput();
 
+  }
+
+  async btnBayar(){
+    const modal = await this.modalController.create({
+      component: PaymentModalPage,
+      componentProps: {
+        orders: this.detail
+      }
+    });
+
+    modal.onDidDismiss()
+      .then((data) => {
+        if(data["data"] == "success"){
+          this.storage.remove(this.storageService.getKey());
+
+          this.resetInput();
+        }
+    });
+
+    modal.present();
+  }
+
+  async scanCustomer(){
+    const modal = await this.modalController.create({
+      component: ScanCustomerPage,
+    });
+
+    modal.onDidDismiss()
+      .then((data) => {
+        if(data["data"] != null){
+          this.customer = data["data"];
+
+          console.log(this.customer);
+        }
+    });
+
+    modal.present();
   }
 
   // CREATE
@@ -86,30 +186,47 @@ export class ListPage implements OnInit {
       id: item.id_product,
       price: parseInt(item.price),
       title: item.name,
-      qty: 1
+      qty: 1,
     }
 
-    this.storageService.checkItem(this.newItem).then( item =>{
+    this.orders = [{
+      "id": 1,
+      "details": this.newItem,
+      "total": this.total
+    }];
+    
+    // console.log(this.orders[0]["details"]);
+    
+    this.storageService.checkItem(this.orders[0]["details"]).then( item =>{
       // itemnya ada, nambah jumlah tok
       if(item == 1){
-        this.storageService.checkQty(this.newItem).then( data => {
+        this.storageService.checkQty(this.orders[0]["details"]).then( data => {
           this.newItem.qty = data;
           this.updateItem(this.newItem);
+          this.newItem = <Item>{};
         })
         
       }else {
-        this.storageService.addItem(this.newItem).then(item => {
+        this.storageService.addItem(this.orders[0]["details"]).then(item => {
           this.newItem = <Item>{};
           this.loadItems(); // Or add it to the array directly
         });
       }
-    })
+    });
+
+    this.loadItems();
   }
 
   // READ
   loadItems() {
     this.storageService.getItems().then(items => {
-      this.orders = items;
+      // this.orders = [{
+      //   "id": 
+      // }
+      // ];
+      // this.orders = items;
+
+      this.detail = items;
 
       this.calculateTotal(items);
     });
@@ -121,7 +238,7 @@ export class ListPage implements OnInit {
       if(items){
         items.forEach(element => {
           var details = JSON.parse(JSON.stringify(element));
-          console.log(details);
+          console.log(element);
           for(let i=0 ;i<details.length;i++)
           {
             console.log(details[i].id);

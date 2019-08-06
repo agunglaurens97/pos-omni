@@ -1,0 +1,37 @@
+<ion-header>
+  <ion-toolbar>
+      <ion-icon name="close" slot="start" style="margin-left: 15px; font-size:15px" (click)="btnClose()"></ion-icon>
+    <ion-title>Input Customer</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <div style="align-content: center;margin: 10px;">
+    <ion-grid class="ion-text-center">
+        <ion-row>
+          <ion-col>
+            <ion-icon class="ion-text-center" style="font-size: 30px;text-align: center" name="camera"></ion-icon>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-label class="font-size:30px"><b>ATAU</b></ion-label>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-input placeholder="Input Disini..." [(ngModel)]="customer"></ion-input>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-button (click)="btnConfirm()">Confirm</ion-button>
+          </ion-col>
+          </ion-row>
+      </ion-grid>
+  </div>
+  
+    
+    
+   
+</ion-content>

@@ -1,3 +1,5 @@
+import { SavedOrderPageModule } from './modals/saved-order/saved-order.module';
+import { PaymentModalPageModule } from './modals/payment-modal/payment-modal.module';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
@@ -12,6 +14,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { IonicStorageModule } from '@ionic/storage';
 import { PipesModule } from './pipes/pipes.module';
+import { ScanCustomerPageModule } from './modals/scan-customer/scan-customer.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -22,6 +25,9 @@ import { PipesModule } from './pipes/pipes.module';
     AppRoutingModule,
     HttpClientModule,
     PipesModule,
+    PaymentModalPageModule,
+    ScanCustomerPageModule,
+    SavedOrderPageModule,
     IonicStorageModule.forRoot(),
   ],
   providers: [

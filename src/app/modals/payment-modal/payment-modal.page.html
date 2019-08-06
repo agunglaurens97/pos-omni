@@ -1,0 +1,41 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-icon name="close" slot="start" style="margin-left: 15px; font-size:15px" (click)="btnClose()"></ion-icon>
+    <ion-title>Review Payment</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+    <div class='cart'>
+        <!-- <ion-select placeholder="Saved Order.." [(ngModel)]="filter" ngDefaultControl style="width: 150px">
+          <ion-select-option *ngFor="let item of saved" value="{{item.id}}">{{item.title}}</ion-select-option>
+        </ion-select> -->
+        <div scrollY="true" id="myFixZone" scrollY="true">
+          <div class='cart-item' >
+            <div class='item' *ngFor="let item of passedOrder" >
+              <img class='item-img' />
+              <ion-label style="display: none" [(ngModel)]="newItem.id" ngDefaultControl>{{item.id}}</ion-label>
+              <h6 class='item-title'>{{item.title}}</h6>
+              <span class='price' style="color: red">Rp {{item.price}}</span><span> x </span><span class='qty' [(ngModel)]="newItem.id" ngDefaultControl >{{item.qty}}</span>
+            </div>
+           </div>
+        </div>
+    
+        <ion-item lines="none">
+            <ion-label>
+              Total : <span style="color: red">Rp {{total}}</span>
+            </ion-label>
+          </ion-item>
+        <ion-item lines="none">
+          <ion-label>
+            Diskon: <span style="color: red">Rp {{diskon}}</span>
+          </ion-label>
+        </ion-item>
+        <ion-item lines="none">
+          <ion-label>
+            Total Bayar: <span style="color: red">Rp {{total-diskon}}</span>
+          </ion-label>
+        </ion-item>
+      </div>
+      <ion-button color="primary" style="width: 50%" (click)="btnBayar()">Bayar</ion-button>
+</ion-content>

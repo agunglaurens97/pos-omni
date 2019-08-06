@@ -6,7 +6,7 @@
     <ion-title>
       Products
     </ion-title>
-    <ion-button color="primary" slot="end" style="margin-right: 30px;">Scan Customer</ion-button>
+    <ion-button color="primary" slot="end" style="margin-right: 30px;" (click)="scanCustomer()">{{customer}}</ion-button>
   </ion-toolbar>
 </ion-header>
 
@@ -34,12 +34,13 @@
   <div class='cart'>
     <h6 style="font-weight:bold; font-size: 20px; ">Cart</h6>
     <button style="background-color: tan; height: 20px;" (click)="clearCart();">Clear Cart</button>
+    <button style="background-color: salmon; height: 20px;" (click)="loadSaveOrder();">Saved Order</button>
     <!-- <ion-select placeholder="Saved Order.." [(ngModel)]="filter" ngDefaultControl style="width: 150px">
       <ion-select-option *ngFor="let item of saved" value="{{item.id}}">{{item.title}}</ion-select-option>
     </ion-select> -->
     <div scrollY="true" id="myFixZone" scrollY="true">
       <div class='cart-item' >
-        <div class='item' *ngFor="let item of orders" >
+        <div class='item' *ngFor="let item of detail" >
           <img class='item-img' />
           <ion-label style="display: none" [(ngModel)]="newItem.id" ngDefaultControl>{{item.id}}</ion-label>
           <h6 class='item-title'>{{item.title}}</h6>
@@ -59,12 +60,11 @@
       </ion-label>
     </ion-item>
     <ion-item lines="none">
-      <ion-button color="danger">Masukkan Discount</ion-button>
+      <ion-button color="danger" disabled="true">Masukkan Discount</ion-button>
     </ion-item>
     
     <ion-item lines="none">
-      <ion-button color="primary" style="width: 50%">Bayar</ion-button>
-      
+      <ion-button color="primary" style="width: 50%" (click)="btnBayar()">Bayar</ion-button>
       <ion-button color="secondary" style="width: 50%" (click)="saveOrder()">Simpan</ion-button>
     </ion-item>
    
