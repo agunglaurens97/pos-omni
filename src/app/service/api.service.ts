@@ -69,4 +69,42 @@ export class ApiService {
       });
     });
   }
+
+  getCustomerInfo(info){
+    var headers = new HttpHeaders();
+    headers.append("Accept", 'Access-Control-Allow-Origin');
+    headers.append('Content-Type', 'application/json' );
+
+    return new Promise(resolve => {
+      this.http.post(`${this.url}/customerInfo/?key=${this.apiKey}`, {
+        "param": info,
+      }, {
+        headers
+      })
+      .subscribe(data => {
+        resolve(data["data"]);
+      }, error => {
+        console.log("No Internet Connection!");
+      });
+    });
+  }
+
+  useVoucher(code){
+    var headers = new HttpHeaders();
+    headers.append("Accept", 'Access-Control-Allow-Origin');
+    headers.append('Content-Type', 'application/json' );
+
+    return new Promise(resolve => {
+      this.http.post(`${this.url}/scanVoucher/?key=${this.apiKey}`, {
+        "voucherCode": code,
+      }, {
+        headers
+      })
+      .subscribe(data => {
+        resolve(data["data"]);
+      }, error => {
+        console.log("No Internet Connection!");
+      });
+    });
+  }
 }

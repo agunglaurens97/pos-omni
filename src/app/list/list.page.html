@@ -51,7 +51,12 @@
 
     <ion-item lines="none">
       <ion-label>
-        Diskon: <span style="color: red">Rp 0</span>
+        Total : <span style="color: red">Rp {{grandtotal}}</span>
+      </ion-label>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label>
+        Diskon: <span style="color: red">{{discount}}</span>
       </ion-label>
     </ion-item>
     <ion-item lines="none">
@@ -60,7 +65,7 @@
       </ion-label>
     </ion-item>
     <ion-item lines="none">
-      <ion-button color="danger" disabled="true">Masukkan Discount</ion-button>
+      <ion-button color="danger" disabled="{{voucherStatus}}" (click)="btnVoucher()">Masukkan Discount</ion-button>
     </ion-item>
     
     <ion-item lines="none">

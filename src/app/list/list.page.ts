@@ -1,3 +1,4 @@
+import { ScanVoucherPage } from './../modals/scan-voucher/scan-voucher.page';
 
 import { StorageService } from './../service/storage.service';
 import { ApiService } from './../service/api.service';
@@ -29,13 +30,17 @@ export class ListPage implements OnInit {
     "details": this.details,
     "total": 0
   }];
+
+  voucherStatus = true;
   
   total = 0;
+  grandtotal = 0;
+  discount = 0;
   newItem: Item = <Item>{};
 
   tmpItem = {};
 
-  customer = "Scan Customer";
+  customer: string = "Scan Customer";
   savedItems= {};
   
   public items: Array<{ title: string; note: string; icon: string }> = [];
@@ -65,11 +70,29 @@ export class ListPage implements OnInit {
 
   calculateTotal(items){
     if(items != null){
-      this.total = 0;
+      this.grandtotal = 0;
       items.forEach(element => {
-        this.total = this.total + (element.price*element.qty);
+        this.grandtotal = this.grandtotal + (element.price*element.qty);
       });
     }
+  }
+
+  async btnVoucher(){
+    const modal = await this.modalController.create({
+      component: ScanVoucherPage,
+      componentProps: {
+        grandtotal: this.grandtotal
+      }
+    });
+
+    modal.onDidDismiss()
+    .then((data) => {
+      this.discount = parseInt(data['data']);
+
+      this.total = this.grandtotal - this.discount;
+
+    });
+    modal.present();
   }
 
   saveOrder(){
@@ -81,7 +104,7 @@ export class ListPage implements OnInit {
       this.savedItems = {
         "id": idx+1,
         "details": this.detail,
-        "total": this.total
+        "total": this.grandtotal
       };
   
       this.storageService.addItemSavedOrder(this.savedItems);
@@ -94,7 +117,7 @@ export class ListPage implements OnInit {
   }
 
   resetInput(){
-    this.total = 0;
+    this.grandtotal = 0;
     this.orders = [];
     this.detail = [];
   }
@@ -115,6 +138,8 @@ export class ListPage implements OnInit {
         console.log(data["data"]['details'])
         
         this.detail = data["data"]["details"]
+
+        this.voucherStatus = false;
 
         // this.addItem(data["data"][0]);
 
@@ -172,8 +197,11 @@ export class ListPage implements OnInit {
       .then((data) => {
         if(data["data"] != null){
           this.customer = data["data"];
+          this.API.getCustomerInfo(this.customer).then( data =>{
+            this.customer = data[0]['name'];
 
-          console.log(this.customer);
+            this.voucherStatus = false;
+          });
         }
     });
 
@@ -192,7 +220,7 @@ export class ListPage implements OnInit {
     this.orders = [{
       "id": 1,
       "details": this.newItem,
-      "total": this.total
+      "total": this.grandtotal
     }];
     
     // console.log(this.orders[0]["details"]);
@@ -213,8 +241,6 @@ export class ListPage implements OnInit {
         });
       }
     });
-
-    this.loadItems();
   }
 
   // READ
@@ -232,26 +258,26 @@ export class ListPage implements OnInit {
     });
   }
 
-  // READ SAVED ITEM
-  loadItemsSaved(){
-    this.storageService.getItemSavedOrder().then(items => {
-      if(items){
-        items.forEach(element => {
-          var details = JSON.parse(JSON.stringify(element));
-          console.log(element);
-          for(let i=0 ;i<details.length;i++)
-          {
-            console.log(details[i].id);
-          }
+  // // READ SAVED ITEM
+  // loadItemsSaved(){
+  //   this.storageService.getItemSavedOrder().then(items => {
+  //     if(items){
+  //       items.forEach(element => {
+  //         var details = JSON.parse(JSON.stringify(element));
+  //         console.log(element);
+  //         for(let i=0 ;i<details.length;i++)
+  //         {
+  //           console.log(details[i].id);
+  //         }
           
-        });
+  //       });
         
-      }else {
+  //     }else {
         
-      }
+  //     }
       
-    });
-  }
+  //   });
+  // }
 
   // UPDATE
   updateItem(item: Item) {

@@ -1,3 +1,4 @@
+import { ScanVoucherPageModule } from './modals/scan-voucher/scan-voucher.module';
 import { SavedOrderPageModule } from './modals/saved-order/saved-order.module';
 import { PaymentModalPageModule } from './modals/payment-modal/payment-modal.module';
 import { NgModule } from '@angular/core';
@@ -15,6 +16,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { IonicStorageModule } from '@ionic/storage';
 import { PipesModule } from './pipes/pipes.module';
 import { ScanCustomerPageModule } from './modals/scan-customer/scan-customer.module';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [AppComponent],
@@ -26,13 +29,16 @@ import { ScanCustomerPageModule } from './modals/scan-customer/scan-customer.mod
     HttpClientModule,
     PipesModule,
     PaymentModalPageModule,
+    ScanVoucherPageModule,
     ScanCustomerPageModule,
     SavedOrderPageModule,
+    FormsModule,
     IonicStorageModule.forRoot(),
   ],
   providers: [
     StatusBar,
     SplashScreen,
+    BarcodeScanner,
     HttpClientModule,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],

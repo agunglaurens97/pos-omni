@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
       <ion-icon name="close" slot="start" style="margin-left: 15px; font-size:15px" (click)="btnClose()"></ion-icon>
-    <ion-title>Input Customer</ion-title>
+    <ion-title>Input Voucher</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -20,12 +20,12 @@
         </ion-row>
         <ion-row>
           <ion-col>
-            <ion-input placeholder="Input Disini..." [(ngModel)]="customer"></ion-input>
+            <ion-input placeholder="Input Disini..." [(ngModel)]="voucher"></ion-input>
           </ion-col>
         </ion-row>
         <ion-row>
           <ion-col>
-            <ion-button (click)="btnCekCustomer()" color="secondary">Cek Username</ion-button>
+            <ion-button (click)="btnCekCustomer()" color="secondary">Cek Voucher</ion-button>
           </ion-col>
         </ion-row>
         <ion-row>
