@@ -26,9 +26,8 @@ export class ListPage implements OnInit {
   details: Item = <Item>{};
   detail: Item[] = [];
   orders = [{
-    "id": 1,
-    "details": this.details,
-    "total": 0
+    details: this.details,
+    grandtotal: 0
   }];
 
   voucherStatus = true;
@@ -73,6 +72,7 @@ export class ListPage implements OnInit {
       this.grandtotal = 0;
       items.forEach(element => {
         this.grandtotal = this.grandtotal + (element.price*element.qty);
+        this.total = this.grandtotal;
       });
     }
   }
@@ -104,7 +104,7 @@ export class ListPage implements OnInit {
       this.savedItems = {
         "id": idx+1,
         "details": this.detail,
-        "total": this.grandtotal
+        "grandtotal": this.grandtotal
       };
   
       this.storageService.addItemSavedOrder(this.savedItems);
@@ -120,6 +120,10 @@ export class ListPage implements OnInit {
     this.grandtotal = 0;
     this.orders = [];
     this.detail = [];
+    this.total = 0,
+    this.discount = 0;
+    this.customer = "Scan Customer";
+    this.voucherStatus = true;
   }
 
   async loadSaveOrder(){
@@ -140,11 +144,13 @@ export class ListPage implements OnInit {
         this.detail = data["data"]["details"]
 
         this.voucherStatus = false;
+        
+        this.storageService.updateOrder(data["data"]);
 
         // this.addItem(data["data"][0]);
 
         // this.loadItems();
-        this.calculateTotal(this.orders);
+        this.calculateTotal(data["data"]['details']);
       }
   });
     modal.present();
@@ -218,9 +224,8 @@ export class ListPage implements OnInit {
     }
 
     this.orders = [{
-      "id": 1,
-      "details": this.newItem,
-      "total": this.grandtotal
+      details: this.newItem,
+      grandtotal: this.grandtotal,
     }];
     
     // console.log(this.orders[0]["details"]);
@@ -252,9 +257,11 @@ export class ListPage implements OnInit {
       // ];
       // this.orders = items;
 
-      this.detail = items;
+      console.log(items);
 
-      this.calculateTotal(items);
+      if(items) this.detail = items['details'];
+
+      this.calculateTotal(this.detail);
     });
   }
 

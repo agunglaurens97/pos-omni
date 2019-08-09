@@ -7,6 +7,12 @@ export interface Item {
   price: number,
   qty: number
 }
+
+export interface Orders {
+  id: number,
+  details: Item[],
+  grandtotal: number,
+}
  
 const ITEMS_KEY = 'orders';
  
@@ -15,19 +21,29 @@ const ITEMS_KEY = 'orders';
 })
 export class StorageService {
  
+  orderku: Orders;
   constructor(private storage: Storage) { }
  
   // CREATE
   addItem(item: Item): Promise<any> {
-    return this.storage.get(ITEMS_KEY).then((items: Item[]) => {
-      console.log(item);
-      if (items) {
-        items.push(item);
-        return this.storage.set(ITEMS_KEY, items);
-        
-      } else {
-        return this.storage.set(ITEMS_KEY, [item]);
+    return this.storage.get(ITEMS_KEY).then((orders: Orders[]) => {
+      if(orders){
+        if (orders['details']) {
+          orders['details'].push(item);
+          return this.storage.set(ITEMS_KEY, orders);
+        } else {
+          orders['details'] = item;
+          return this.storage.set(ITEMS_KEY, orders);
+        }
+      }else {
+        this.orderku = {
+          id: 0,
+          details: [item],
+          grandtotal: 0,
+        }
+        return this.storage.set(ITEMS_KEY, this.orderku);
       }
+     
     });
   }
 
@@ -48,13 +64,13 @@ export class StorageService {
   }
 
   checkItem(item : Item): Promise<any>{
-    return this.storage.get(ITEMS_KEY).then((items: Item[]) => {
+    return this.storage.get(ITEMS_KEY).then((orders: Orders[]) => {
       //console.log("asd",items);
-      if (items == null) {
+      if (orders == null) {
         return 0;
       } else {
-        return this.storage.get(ITEMS_KEY).then((items: Item[]) => {
-          for (let i of items) {
+        return this.storage.get(ITEMS_KEY).then((orders: Orders[]) => {
+          for (let i of orders['details']) {
             if (i.id === item.id) {
               return 1;
             }
@@ -66,8 +82,8 @@ export class StorageService {
   }
 
   checkQty(item : Item): Promise<any>{
-    return this.storage.get(ITEMS_KEY).then((items: Item[]) => {
-      for (let i of items) {
+    return this.storage.get(ITEMS_KEY).then((orders: Orders[]) => {
+      for (let i of orders['details']) {
         if (i.id === item.id) {
           return i.qty;
         }
@@ -87,40 +103,58 @@ export class StorageService {
  
   // UPDATE
   updateItem(item: Item): Promise<any> {
-    return this.storage.get(ITEMS_KEY).then((items: Item[]) => {
-      if (!items || items.length === 0) {
+    return this.storage.get(ITEMS_KEY).then((orders: Orders[]) => {
+      if (!orders) {
         return null;
       }
  
+      
       let newItems: Item[] = [];
- 
-      for (let i of items) {
-        if (i.id === item.id) {
-          newItems.push(item);
-        } else {
-          newItems.push(i);
-        }
+
+      let orderbaru = {
+        id: orders['id'],
+        details: newItems,
+        grandtotal: orders['grandtotal'],
       }
  
-      return this.storage.set(ITEMS_KEY, newItems);
+      for (let i of orders['details']) {
+        if (i.id === item.id) {
+          orderbaru['details'].push(item);
+        } else {
+          orderbaru['details'].push(i);
+        }
+      }
+      
+      return this.storage.set(ITEMS_KEY, orderbaru);
     });
+  }
+
+  // UPDATE ORDERS
+  updateOrder(order: Orders): Promise<any>{
+    return this.storage.set(ITEMS_KEY, order);
   }
  
   // DELETE
   deleteItem(id: number): Promise<Item> {
-    return this.storage.get(ITEMS_KEY).then((items: Item[]) => {
-      if (!items || items.length === 0) {
+    return this.storage.get(ITEMS_KEY).then((orders: Orders[]) => {
+      if (!orders || orders.length === 0) {
         return null;
       }
  
       let toKeep: Item[] = [];
+
+      let orderbaru = {
+        id: orders['id'],
+        details: toKeep,
+        grandtotal: orders['grandtotal'],
+      }
  
-      for (let i of items) {
+      for (let i of orders['details']) {
         if (i.id !== id) {
           toKeep.push(i);
         }
       }
-      return this.storage.set(ITEMS_KEY, toKeep);
+      return this.storage.set(ITEMS_KEY, orderbaru);
     });
   }
 
